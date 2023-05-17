@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Máy tính xử lý thông minh</title>
+</head>
+<body>
+    <h1>Máy tính xử lý thông minh</h1>
+    <div id="chat-container">
+        <div id="chat-log"></div>
+        <div id="input-container">
+            <input type="text" id="user-input">
+            <button onclick="sendMessage()">Gửi</button>
+        </div>
+    </div>
+
+    <script>
+        function appendMessage(message, sender) {
+            var chatLog = document.getElementById('chat-log');
+            var messageDiv = document.createElement('div');
+            messageDiv.innerHTML = '<strong>' + sender + ':</strong> ' + message;
+            chatLog.appendChild(messageDiv);
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById('user-input').value;
+            appendMessage(userInput, 'Bạn');
+
+            fetch('/chat', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    'user_input': userInput
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                var response = data['response'];
+                appendMessage(response, 'Máy tính thông minh');
+            });
+
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+</html>
